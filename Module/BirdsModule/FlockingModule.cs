@@ -108,7 +108,7 @@ namespace Flocking
 
             if (cnf == null)
             {
-                m_log.InfoFormat("[{0}]: No region section [{1}] found in addon-modules/{2}/config/*.ini configuration files.", m_name, scene.RegionInfo.RegionName, m_name);
+                m_log.InfoFormat("[{0}]: No region section [{1}] found in {2} configuration file.", m_name, scene.RegionInfo.RegionName, m_regionConfigDir);
                 //string moduleConfigFile = Path.Combine(Util.configDir(),m_name + ".ini");
                 string moduleConfigFile = Path.Combine(m_regionConfigDir, "Regions.ini");
                 try
