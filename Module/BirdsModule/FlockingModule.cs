@@ -43,8 +43,10 @@ using OpenSim.Framework.Console;
 using Mono.Addins;
 using LSL_List = OpenSim.Region.ScriptEngine.Shared.LSL_Types.list;
 
-[assembly: Addin("OpenSimBirds", "0.2")]
+[assembly: Addin("OpenSimBirds", OpenSim.VersionInfo.VersionNumber + "0.3")]
 [assembly: AddinDependency("OpenSim.Region.Framework", OpenSim.VersionInfo.VersionNumber)]
+[assembly: AddinDescription("OpenSimBirds module.")]
+[assembly: AddinAuthor("Jak Daniels")]
 
 namespace Flocking
 {
