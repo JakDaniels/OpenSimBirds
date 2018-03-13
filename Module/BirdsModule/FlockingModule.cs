@@ -384,13 +384,13 @@ namespace Flocking
 
         private void RegisterCommands ()
         {
-            AddCommand ("stop", "", "Stop Birds Flocking", HandleStopCmd);
-            AddCommand ("start", "", "Start Birds Flocking", HandleStartCmd);
-            AddCommand ("enable", "", "Enable Birds Flocking", HandleEnableCmd);
-            AddCommand ("disable", "", "Disable Birds Flocking", HandleDisableCmd);
-            AddCommand ("size", "num", "Adjust the size of the flock ", HandleSetSizeCmd);
-            AddCommand ("prim", "name", "Set the prim used for each bird to that passed in", HandleSetPrimCmd);
-            AddCommand ("speed", "num", "Set the maximum velocity each bird may achieve", HandleSetMaxSpeedCmd);
+            AddCommand("stop", "", "Stop Birds Flocking", HandleStopCmd);
+            AddCommand("start", "", "Start Birds Flocking", HandleStartCmd);
+            AddCommand("enable", "", "Enable Birds Flocking", HandleEnableCmd);
+            AddCommand("disable", "", "Disable Birds Flocking", HandleDisableCmd);
+            AddCommand("size", "num", "Adjust the size of the flock ", HandleSetSizeCmd);
+            AddCommand("prim", "name", "Set the prim used for each bird to that passed in", HandleSetPrimCmd);
+            AddCommand("speed", "num", "Set the maximum velocity each bird may achieve", HandleSetMaxSpeedCmd);
             AddCommand("force", "num", "Set the maximum force each bird may accelerate", HandleSetMaxForceCmd);
             AddCommand("distance", "num", "Set the maximum distance that other birds are to be considered in the same flock as us", HandleSetNeighbourDistanceCmd);
             AddCommand("separation", "num", "How far away from other birds we would like to stay", HandleSetDesiredSeparationCmd);
