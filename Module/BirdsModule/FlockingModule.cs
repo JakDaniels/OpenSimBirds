@@ -115,7 +115,7 @@ namespace Flocking
                 string moduleConfigFile = Path.Combine(m_regionConfigDir, "Regions.ini");
                 try
                 {
-                    m_log.InfoFormat("[{0}]: Checking {1} for [{2}] section containing valid config keys", m_name, moduleConfigFile, scene.RegionInfo.RegionName);
+                    m_log.InfoFormat("[{0}]: Checking {1} for [{2}] section", m_name, moduleConfigFile, scene.RegionInfo.RegionName);
                     m_config = new IniConfigSource(moduleConfigFile);
                     cnf = m_config.Configs[scene.RegionInfo.RegionName];
                 }
@@ -126,13 +126,18 @@ namespace Flocking
 
                 if (cnf == null)
                 {
-                    m_log.InfoFormat("[{0}]: No region section [{1}] found in configuration {2}. Birds in this region are set to Disabled", m_name, scene.RegionInfo.RegionName, moduleConfigFile);
-                    m_enabled = false;
-                    return;
+                    m_log.InfoFormat("[{0}]: No region section [{1}] found in configuration {2}.", m_name, scene.RegionInfo.RegionName, moduleConfigFile);
+
+                    cnf = m_config.Configs[scene.RegionInfo.RegionName];
+                    if (cnf == null)
+                    {
+                        m_log.InfoFormat("[{0}]: No region section [{1}] found in main configuration. Module is disabled.", m_name, scene.RegionInfo.RegionName);
+                        return;
+                    }
                 }
             }
 
-            m_startup = cnf.GetBoolean("BirdsModuleStartup", true);
+            m_startup = cnf.GetBoolean("BirdsModuleStartup", false);
 
             if (m_startup)
             {
@@ -208,7 +213,7 @@ namespace Flocking
 
                 FlockInitialise();
             }
-            else m_log.InfoFormat("[{0}] Module is disabled in Region {1}", m_name, scene.RegionInfo.RegionName);
+            else m_log.InfoFormat("[{0}] Module is disabled in region {1}", m_name, scene.RegionInfo.RegionName);
         }
 
         public void RegionLoaded (Scene scene)
