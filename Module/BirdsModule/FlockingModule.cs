@@ -439,7 +439,8 @@ namespace Flocking
                 //}
                 SendSimChat(response, m_chatChannel);
             } else {
-                MainConsole.Instance.Output (response);
+                if (m_ready)
+                    MainConsole.Instance.Output (response);
             }
         }
 
