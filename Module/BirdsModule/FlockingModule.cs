@@ -137,12 +137,12 @@ namespace Flocking
                 }
             }
 
-            m_startup = cnf.GetBoolean("BirdsModuleStartup", false);
+            m_startup = cnf.GetBoolean("BirdsModuleEnabled", false);
 
             if (m_startup)
             {
                 m_scene = scene;
-                m_enabled = cnf.GetBoolean("BirdsEnabled", false);
+                m_enabled = cnf.GetBoolean("BirdsShowOnStartup", false);
                 m_chatChannel = cnf.GetInt("BirdsChatChannel", 118);
                 m_birdPrim = cnf.GetString("BirdsPrim", "birdPrim");
                 m_flockSize = cnf.GetInt("BirdsFlockSize", 20);
