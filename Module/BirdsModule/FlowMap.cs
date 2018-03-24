@@ -32,170 +32,170 @@ using OpenSim.Region.Framework.Scenes;
 
 namespace Flocking
 {
-	public class FlowMap
-	{
-		private Scene m_scene;
+    public class FlowMap
+    {
+        private Scene m_scene;
         private float[, ,] m_flowMap;
         private uint regionX;
         private uint regionY;
         private uint regionZ;
         private float regionBorder;
-		
-		public FlowMap (Scene scene, int maxHeight, float borderSize)
-		{
-			m_scene = scene;
+
+        public FlowMap (Scene scene, int maxHeight, float borderSize)
+        {
+            m_scene = scene;
             regionX = m_scene.RegionInfo.RegionSizeX;
             regionY = m_scene.RegionInfo.RegionSizeY;
             regionZ = (uint)maxHeight;
             regionBorder = borderSize;
             m_flowMap = new float[regionX, regionY, regionZ];
-		}
-		
-		public int LengthX {
-			get {return (int)regionX;}
-		}
-		public int LengthY {
-			get {return (int)regionY;}
-		}
-		public int LengthZ {
-			get {return (int)regionZ;}
-		}
+        }
+
+        public int LengthX {
+            get {return (int)regionX;}
+        }
+        public int LengthY {
+            get {return (int)regionY;}
+        }
+        public int LengthZ {
+            get {return (int)regionZ;}
+        }
         public int Border  {
             get {return (int)regionBorder;}
         }
-		
-		public void Initialise() {
-			//fill in the boundaries
-			for( int x = 0; x < regionX; x++ ) {
-				for( int y = 0; y < regionY; y++ ) {
-					m_flowMap[x,y,0] = 100f;
-					m_flowMap[x,y, regionZ-1] = 100f;
-				}
-			}
-			for( int x = 0; x < regionX; x++ ) {
-				for( int z = 0; z < regionZ; z++ ) {
-					m_flowMap[x,0,z] = 100f;
-					m_flowMap[x,regionY-1,z] = 100f;
-				}
-			}
-			for( int y = 0; y < regionY; y++ ) {
-				for( int z = 0; z < regionZ; z++ ) {
-					m_flowMap[0,y,z] = 100f;
-					m_flowMap[regionX-1,y,z] = 100f;
-				}
-			}
-			
-			//fill in the terrain
-			for( int x = 0; x < regionX; x++ ) {
-				for( int y = 0; y < regionY; y++ ) {
-					int zMax = Convert.ToInt32(m_scene.GetGroundHeight( x, y ));
-					for( int z = 1; z < zMax; z++ ) {
-						m_flowMap[x,y,z] = 100f;
-					}
-				}
-			}
-			
-			// fill in the things
-			foreach( EntityBase entity in m_scene.GetEntities() ) {
-				if( entity is SceneObjectGroup ) {
-					SceneObjectGroup sog = (SceneObjectGroup)entity;
-					
-					//todo: ignore phantom
-					float fmaxX, fminX, fmaxY, fminY, fmaxZ, fminZ;
-					int maxX, minX, maxY, minY, maxZ, minZ;
-					sog.GetAxisAlignedBoundingBoxRaw( out fminX, out fmaxX, out fminY, out fmaxY, out fminZ, out fmaxZ );
-					
-					minX = Convert.ToInt32(fminX);
-					maxX = Convert.ToInt32(fmaxX);
-					minY = Convert.ToInt32(fminY);
-					maxY = Convert.ToInt32(fmaxX);
-					minZ = Convert.ToInt32(fminZ);
-					maxZ = Convert.ToInt32(fmaxZ);
-					
-					for( int x = minX; x < maxX; x++ ) {
-						for( int y = minY; y < maxY; y++ ) {
-							for( int z = minZ; z < maxZ; z++ ) {
-								m_flowMap[x,y,z] = 100f;
-							}
-						}
-					}
-				}
-			}
-		}
 
-		public bool WouldHitObstacle (Vector3 currPos, Vector3 targetPos)
-		{
-			bool retVal = false;
-			//fail fast
-			if( IsOutOfBounds(targetPos) ) {
-				retVal = true;
-			} else if( IsWithinObstacle(targetPos) ) {
-				retVal = true;
-			} else if( IntersectsObstacle (currPos, targetPos) ) {
-				retVal = true;
-			}
-			
-			return retVal;
-		}
-		
-		public bool IsOutOfBounds(Vector3 targetPos) {
-			bool retVal = false;
-			if( targetPos.X < regionBorder ||
-				targetPos.X > regionX - regionBorder ||
+        public void Initialise() {
+            //fill in the boundaries
+            for( int x = 0; x < regionX; x++ ) {
+                for( int y = 0; y < regionY; y++ ) {
+                    m_flowMap[x,y,0] = 100f;
+                    m_flowMap[x,y, regionZ-1] = 100f;
+                }
+            }
+            for( int x = 0; x < regionX; x++ ) {
+                for( int z = 0; z < regionZ; z++ ) {
+                    m_flowMap[x,0,z] = 100f;
+                    m_flowMap[x,regionY-1,z] = 100f;
+                }
+            }
+            for( int y = 0; y < regionY; y++ ) {
+                for( int z = 0; z < regionZ; z++ ) {
+                    m_flowMap[0,y,z] = 100f;
+                    m_flowMap[regionX-1,y,z] = 100f;
+                }
+            }
+
+            //fill in the terrain
+            for( int x = 0; x < regionX; x++ ) {
+                for( int y = 0; y < regionY; y++ ) {
+                    int zMax = Convert.ToInt32(m_scene.GetGroundHeight( x, y ));
+                    for( int z = 1; z < zMax; z++ ) {
+                        m_flowMap[x,y,z] = 100f;
+                    }
+                }
+            }
+
+            // fill in the things
+            foreach( EntityBase entity in m_scene.GetEntities() ) {
+                if( entity is SceneObjectGroup ) {
+                    SceneObjectGroup sog = (SceneObjectGroup)entity;
+
+                    //todo: ignore phantom
+                    float fmaxX, fminX, fmaxY, fminY, fmaxZ, fminZ;
+                    int maxX, minX, maxY, minY, maxZ, minZ;
+                    sog.GetAxisAlignedBoundingBoxRaw( out fminX, out fmaxX, out fminY, out fmaxY, out fminZ, out fmaxZ );
+
+                    minX = Convert.ToInt32(fminX);
+                    maxX = Convert.ToInt32(fmaxX);
+                    minY = Convert.ToInt32(fminY);
+                    maxY = Convert.ToInt32(fmaxX);
+                    minZ = Convert.ToInt32(fminZ);
+                    maxZ = Convert.ToInt32(fmaxZ);
+
+                    for( int x = minX; x < maxX; x++ ) {
+                        for( int y = minY; y < maxY; y++ ) {
+                            for( int z = minZ; z < maxZ; z++ ) {
+                                m_flowMap[x,y,z] = 100f;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public bool WouldHitObstacle (Vector3 currPos, Vector3 targetPos)
+        {
+            bool retVal = false;
+            //fail fast
+            if( IsOutOfBounds(targetPos) ) {
+                retVal = true;
+            } else if( IsWithinObstacle(targetPos) ) {
+                retVal = true;
+            } else if( IntersectsObstacle (currPos, targetPos) ) {
+                retVal = true;
+            }
+
+            return retVal;
+        }
+
+        public bool IsOutOfBounds(Vector3 targetPos) {
+            bool retVal = false;
+            if( targetPos.X < regionBorder ||
+                targetPos.X > regionX - regionBorder ||
                 targetPos.Y < regionBorder ||
-				targetPos.Y > regionY - regionBorder ||
-				targetPos.Z < regionBorder ||
-				targetPos.Z > regionZ - regionBorder ) {
-				
-				retVal = true;
-			}
-			
-			return retVal;
-		}
+                targetPos.Y > regionY - regionBorder ||
+                targetPos.Z < regionBorder ||
+                targetPos.Z > regionZ - regionBorder ) {
 
-		public bool IntersectsObstacle (Vector3 currPos, Vector3 targetPos)
-		{
-			bool retVal = false;
-			// Ray trace the Vector and fail as soon as we hit something
-			Vector3 direction = targetPos - currPos;
-			float length = direction.Length();
-			// check every metre
-			for( float i = 1f; i < length; i += 1f ) {
-				Vector3 rayPos = currPos + ( direction * i );
-				//give up if we go OOB on this ray
-				if( IsOutOfBounds( rayPos ) ){ 
-					retVal = true;
-					break;
-				}
-				else if( IsWithinObstacle( rayPos ) ) {
-					retVal = true;
-					break;
-				}
-			}
-			
-			return retVal;
-		}
-		
-		public bool IsWithinObstacle( Vector3 targetPos ) {
-			return IsWithinObstacle(Convert.ToInt32(targetPos.X), Convert.ToInt32(targetPos.Y),Convert.ToInt32(targetPos.Z));
-		}
-		
-		public bool IsWithinObstacle( int x, int y, int z ) {
-			bool retVal = false;
+                retVal = true;
+            }
+
+            return retVal;
+        }
+
+        public bool IntersectsObstacle (Vector3 currPos, Vector3 targetPos)
+        {
+            bool retVal = false;
+            // Ray trace the Vector and fail as soon as we hit something
+            Vector3 direction = targetPos - currPos;
+            float length = direction.Length();
+            // check every metre
+            for( float i = 1f; i < length; i += 1f ) {
+                Vector3 rayPos = currPos + ( direction * i );
+                //give up if we go OOB on this ray
+                if( IsOutOfBounds( rayPos ) ){
+                    retVal = true;
+                    break;
+                }
+                else if( IsWithinObstacle( rayPos ) ) {
+                    retVal = true;
+                    break;
+                }
+            }
+
+            return retVal;
+        }
+
+        public bool IsWithinObstacle( Vector3 targetPos ) {
+            return IsWithinObstacle(Convert.ToInt32(targetPos.X), Convert.ToInt32(targetPos.Y),Convert.ToInt32(targetPos.Z));
+        }
+
+        public bool IsWithinObstacle( int x, int y, int z ) {
+            bool retVal = false;
             if (x >= LengthX || y >= LengthY || z >= LengthZ)
             {
-				retVal = true;
+                retVal = true;
             }
             else if (x < 0 || y < 0 || z < 0)
             {
-				retVal = true;
-			} else if (m_flowMap[x,y,z] > 50f) {
-				retVal = true;
-			}
-			return retVal;	
-		}
-	}
-	
-	
+                retVal = true;
+            } else if (m_flowMap[x,y,z] > 50f) {
+                retVal = true;
+            }
+            return retVal;
+        }
+    }
+
+
 }
 
