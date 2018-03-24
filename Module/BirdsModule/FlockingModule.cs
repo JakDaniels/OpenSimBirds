@@ -62,8 +62,8 @@ namespace Flocking
         private ICommandConsole m_console;
         private FlockingModel m_model;
         private FlockingView m_view;
-        private bool m_startup = true;
         private bool m_enabled = false;
+        private bool m_startup = false;
         private bool m_ready = false;
         private uint m_frame = 0;
         private int m_frameUpdateRate = 1;
@@ -137,12 +137,12 @@ namespace Flocking
                 }
             }
 
-            m_startup = cnf.GetBoolean("BirdsModuleEnabled", false);
+            m_enabled = cnf.GetBoolean("BirdsModuleEnabled", false);
 
-            if (m_startup)
+            if (m_enabled)
             {
                 m_scene = scene;
-                m_enabled = cnf.GetBoolean("BirdsShowOnStartup", false);
+                m_startup = cnf.GetBoolean("BirdsShowOnStartup", false);
                 m_chatChannel = cnf.GetInt("BirdsChatChannel", 118);
                 m_birdPrim = cnf.GetString("BirdsPrim", "birdPrim");
                 m_flockSize = cnf.GetInt("BirdsFlockSize", 20);
@@ -192,7 +192,7 @@ namespace Flocking
                     m_log.InfoFormat("[{0}] No command security was defined in the config. Any user may possibly configure this module from a script!", m_name);
                 }
 
-                m_log.InfoFormat("[{0}] Module is {1} listening for commands on channel {2} with Flock Size {3}", m_name, m_enabled ? "enabled and" : "disabled, but still", m_chatChannel, m_flockSize);
+                m_log.InfoFormat("[{0}] Module is {1} listening for commands on channel {2} with Flock Size {3}", m_name, m_startup ? "enabled and" : "disabled, but still", m_chatChannel, m_flockSize);
 
                 m_console = MainConsole.Instance;
                 //register commands with the scene
@@ -218,7 +218,7 @@ namespace Flocking
 
         public void RegionLoaded (Scene scene)
         {
-            if (m_startup)
+            if (m_enabled)
             {
                 // Mark Module Ready for duty
                 m_ready = true;
@@ -234,7 +234,7 @@ namespace Flocking
         public void RemoveRegion (Scene scene)
         {
             m_log.InfoFormat("[{0}]: Removing region {1} from this module", m_name, scene.RegionInfo.RegionName);
-            if (m_startup) {
+            if (m_enabled) {
                 m_view.Clear();
                 scene.EventManager.OnFrame -= FlockUpdate;
                 scene.EventManager.OnChatFromClient -= SimChatSent;
@@ -246,7 +246,7 @@ namespace Flocking
 
         public void Close()
         {
-            if (m_startup)
+            if (m_enabled)
             {
                 m_scene.EventManager.OnFrame -= FlockUpdate;
                 m_scene.EventManager.OnChatFromClient -= SimChatSent;
@@ -299,7 +299,7 @@ namespace Flocking
 
         public void FlockUpdate ()
         {
-            if (!m_ready || !m_enabled || ((m_frame++ % m_frameUpdateRate) != 0))
+            if (!m_ready || !m_startup || ((m_frame++ % m_frameUpdateRate) != 0))
             {
                 return;
             }
@@ -453,7 +453,7 @@ namespace Flocking
         {
             if (m_ready && ShouldHandleCmd ()) {
                 m_log.InfoFormat("[{0}]: Bird flocking is disabled in region {1}.", m_name, m_scene.RegionInfo.RegionName);
-                m_enabled = false;
+                m_startup = false;
                 //m_ready = false;
                 m_view.Clear();
             }
@@ -464,26 +464,26 @@ namespace Flocking
             if (m_ready && ShouldHandleCmd())
             {
                 m_log.InfoFormat("[{0}]: Bird flocking is enabled in region {1}.", m_name, m_scene.RegionInfo.RegionName);
-                m_enabled = true;
+                m_startup = true;
                 //m_ready = true;
             }
         }
 
         public void HandleStopCmd (string module, string[] args)
         {
-            if (m_enabled && m_ready && ShouldHandleCmd())
+            if (m_startup && m_ready && ShouldHandleCmd())
             {
                 m_log.InfoFormat("[{0}]: Bird flocking is stopped in region {1}.", m_name, m_scene.RegionInfo.RegionName);
-                m_enabled = false;
+                m_startup = false;
             }
         }
 
         public void HandleStartCmd(string module, string[] args)
         {
-            if (!m_enabled && m_ready && ShouldHandleCmd())
+            if (!m_startup && m_ready && ShouldHandleCmd())
             {
                 m_log.InfoFormat("[{0}]: Bird flocking is started in region {1}.", m_name, m_scene.RegionInfo.RegionName);
-                m_enabled = true;
+                m_startup = true;
                 FlockUpdate();
             }
         }
@@ -527,8 +527,8 @@ namespace Flocking
                     m_log.InfoFormat("[{0}]: Sending bird statistics to region {1}.", m_name, m_scene.RegionInfo.RegionName);
                 }
 
-                ShowResponse("birds-started = " + (m_enabled ? "True" : "False"), inWorld);
-                ShowResponse("birds-enabled = " + (m_ready ? "True" : "False"), inWorld);
+                ShowResponse("birds-enabled = " + (m_enabled ? "True" : "False"), inWorld);
+                ShowResponse("birds-startup = " + (m_ready ? "True" : "False"), inWorld);
                 ShowResponse("birds-prim = " + m_view.BirdPrim, inWorld);
                 ShowResponse("birds-framerate = " + m_frameUpdateRate, inWorld);
                 ShowResponse("birds-maxsize = " + m_maxFlockSize, inWorld);
