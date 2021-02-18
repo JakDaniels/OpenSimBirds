@@ -31,105 +31,105 @@ using OpenMetaverse;
 
 namespace Flocking
 {
-	public class FlockingModel
-	{
+    public class FlockingModel
+    {
         private List<Bird> m_flock = new List<Bird>();
-		private FlowMap m_flowMap;
-		private float m_maxSpeed;
-		private float m_maxForce;
-		private float m_neighbourDistance;
-		private float m_desiredSeparation;
-		private float m_tolerance;
+        private FlowMap m_flowMap;
+        private float m_maxSpeed;
+        private float m_maxForce;
+        private float m_neighbourDistance;
+        private float m_desiredSeparation;
+        private float m_tolerance;
         private float m_border;
         private string m_name;
-		
-		private Random m_rnd = new Random(Environment.TickCount);
-		
-		public int Size {
-			get {return m_flock.Count;}
-			set {
-				//if( value < m_flock.Count ) {
-				//	m_flock.RemoveRange( 0, m_flock.Count - value );
-				//} else
+
+        private Random m_rnd = new Random(Environment.TickCount);
+
+        public int Size {
+            get {return m_flock.Count;}
+            set {
+                //if( value < m_flock.Count ) {
+                //  m_flock.RemoveRange( 0, m_flock.Count - value );
+                //} else
                 m_flock = new List<Bird>();
                 while( value > m_flock.Count ) {
-					AddBird(m_name + m_flock.Count);	
-				}
-			}
-		}
-		
-		public FlockingModel(string moduleName, float maxSpeed, float maxForce, float neighbourDistance, float desiredSeparation, float tolerance, float border) {
+                    AddBird(m_name + m_flock.Count);
+                }
+            }
+        }
+
+        public FlockingModel(string moduleName, float maxSpeed, float maxForce, float neighbourDistance, float desiredSeparation, float tolerance, float border) {
             m_name = moduleName;
             m_maxSpeed = maxSpeed;
-			m_maxForce = maxForce;
-			m_neighbourDistance = neighbourDistance;
-			m_desiredSeparation = desiredSeparation;
-			m_tolerance = tolerance;
+            m_maxForce = maxForce;
+            m_neighbourDistance = neighbourDistance;
+            m_desiredSeparation = desiredSeparation;
+            m_tolerance = tolerance;
             m_border = border;
-		}
+        }
 
-		void AddBird (string name)
-		{
-			Bird Bird = new Bird (name, this, m_flowMap);
-			
-			// find an initial random location for this Bird
-			// somewhere not within an obstacle
-			int xInit = m_rnd.Next(m_flowMap.LengthX);
-			int yInit = m_rnd.Next(m_flowMap.LengthY);
-			int zInit = m_rnd.Next(m_flowMap.LengthZ);
-			
-			while( m_flowMap.IsWithinObstacle( xInit, yInit, zInit ) ){
-				xInit = m_rnd.Next(m_flowMap.LengthX);
-				yInit = m_rnd.Next(m_flowMap.LengthY);
-				zInit = m_rnd.Next(m_flowMap.LengthZ);
-			}
-				
-			Bird.Location = new Vector3 (Convert.ToSingle(xInit), Convert.ToSingle(yInit), Convert.ToSingle(zInit));
-			m_flock.Add (Bird);
-		}
-						
-		public float MaxSpeed {
-			get {return m_maxSpeed;}
+        void AddBird (string name)
+        {
+            Bird Bird = new Bird (name, this, m_flowMap);
+
+            // find an initial random location for this Bird
+            // somewhere not within an obstacle
+            int xInit = m_rnd.Next(m_flowMap.LengthX);
+            int yInit = m_rnd.Next(m_flowMap.LengthY);
+            int zInit = m_rnd.Next(m_flowMap.LengthZ);
+
+            while( m_flowMap.IsWithinObstacle( xInit, yInit, zInit ) ){
+                xInit = m_rnd.Next(m_flowMap.LengthX);
+                yInit = m_rnd.Next(m_flowMap.LengthY);
+                zInit = m_rnd.Next(m_flowMap.LengthZ);
+            }
+
+            Bird.Location = new Vector3 (Convert.ToSingle(xInit), Convert.ToSingle(yInit), Convert.ToSingle(zInit));
+            m_flock.Add (Bird);
+        }
+
+        public float MaxSpeed {
+            get {return m_maxSpeed;}
             set { m_maxSpeed = value; }
-		}
-				
-		public float MaxForce {
-			get {return m_maxForce;}
+        }
+
+        public float MaxForce {
+            get {return m_maxForce;}
             set { m_maxForce = value; }
-		}
+        }
 
-		public float NeighbourDistance {
-			get {return m_neighbourDistance;}
+        public float NeighbourDistance {
+            get {return m_neighbourDistance;}
             set { m_neighbourDistance = value; }
-		}
-				
-		public float DesiredSeparation {
-			get {return m_desiredSeparation;}
+        }
+
+        public float DesiredSeparation {
+            get {return m_desiredSeparation;}
             set { m_desiredSeparation = value; }
-		}
-				
-		public float Tolerance {
-			get {return m_tolerance;}
+        }
+
+        public float Tolerance {
+            get {return m_tolerance;}
             set { m_tolerance = value; }
-		}
-				
+        }
 
-		public void Initialise (int num, FlowMap flowMap)
-		{
-			m_flowMap = flowMap;			
-  			for (int i = 0; i < num; i++) {
-				AddBird (m_name + i );
-  			}
-		}
 
-		public List<Bird> UpdateFlockPos ()
-		{
-    		foreach (Bird b in m_flock) {
-      			b.MoveInSceneRelativeToFlock(m_flock);  // Passing the entire list of Birds to each Bird individually
-    		}
-			
-			return m_flock;
-		}
-	}
+        public void Initialise (int num, FlowMap flowMap)
+        {
+            m_flowMap = flowMap;
+            for (int i = 0; i < num; i++) {
+                AddBird (m_name + i );
+            }
+        }
+
+        public List<Bird> UpdateFlockPos ()
+        {
+            foreach (Bird b in m_flock) {
+                b.MoveInSceneRelativeToFlock(m_flock);  // Passing the entire list of Birds to each Bird individually
+            }
+
+            return m_flock;
+        }
+    }
 }
 

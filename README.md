@@ -25,13 +25,13 @@ Configuration:
 
 If you have the module added to or compiled with your OpenSim build then it will run a instance of itself once per region.
 By default it will configure itself to some sensible defaults and will sit quietly in the background waiting for commands
-from the console, or from in-world. It will not enable itself (i.e. rez some birds) until commanded to do so, or 
-configured to do so in the .ini file. It is possible to completely stop the module from doing anything (including 
+from the console, or from in-world. It will not enable itself (i.e. rez some birds) until commanded to do so, or
+configured to do so in the .ini file. It is possible to completely stop the module from doing anything (including
 listening for commands), but you must have a particular setting in the .ini file for that region (see below) - in other
 words, you must have a config for it!
 
 To become active, the module needs to be enabled in the ini file or commanded to do so from inworld or the console.
-Otherwise it does nothing on startup except listen for commands. If you are running multiple regions on one simulator you 
+Otherwise it does nothing on startup except listen for commands. If you are running multiple regions on one simulator you
 can have different Birds settings per region in the configuration file, in the exact same way you can customize per Region
 setting in Regions.ini
 
@@ -59,9 +59,9 @@ Here is an example config:
 	;; Set the Birds settings per named region
 
 	[Test Region 1]
-	
-	 BirdsModuleStartup = True   ;this is the default and determines whether the module does anything
-	 BirdsEnabled = True         ;set to false to disable the birds from appearing in this region	
+
+	 BirdsModuleEnabled = True   ;this is the default and determines whether the module does anything
+	 BirdsShowOnStartup = True   ;set to false to disable the birds from appearing in this region
 	 BirdsFlockSize = 50         ;the number of birds to flock
 	 BirdsMaxFlockSize = 100     ;the maximum flock size that can be created (keeps things sane)
 	 BirdsMaxSpeed = 3           ;how far each bird can travel per update
@@ -72,9 +72,9 @@ Here is an example config:
 	 BirdsBorderSize = 5         ;how close to the edge of a region can we get?
 	 BirdsMaxHeight = 256        ;how high are we allowed to flock
 	 BirdsUpdateEveryNFrames = 1 ;update bird positions every N simulator frames
-	 BirdsPrim = SeaGull1        ;By default the module will create a flock of plain wooden spheres, 
+	 BirdsPrim = SeaGull1        ;By default the module will create a flock of plain wooden spheres,
 	                             ;however this can be overridden to the name of an existing prim that
-	                             ;needs to already exist in the scene - i.e. be rezzed in the region.	
+	                             ;needs to already exist in the scene - i.e. be rezzed in the region.
 
          ;who is allowed to send commands via chat or script: list of UUIDs or ESTATE_OWNER or ESTATE_MANAGER
          ;or everyone if not specified
@@ -94,7 +94,7 @@ Runtime Commands:
 The following commands, which can be issued on the Console or via in-world chat or scripted chat on the BirdsChatChannel
 to control the birds at runtime:
 
-	birds-stop or /118 stop                         ;stop all birds flocking 
+	birds-stop or /118 stop                         ;stop all birds flocking
 	birds-start or /118 start                       ;start all birds flocking
 	birds-enable or /118 enable                     ;enable the flocking simulation if disabled and rez new birds
 	birds-disable or /118 disable                   ;stop all birds and remove them from the scene
@@ -122,8 +122,8 @@ Security:
 By default anyone can send commands to the module from within a script or via the in-world chat on the 'BirdsChatChannel' channel.
 You should use a high negative value for channel if you want to allow script access, but not in-world chat. Further you can restrict
 which users are allowed to control the module using the 'BirdsAllowedControllers' setting. This is a comma separated list of user UUIDs,
-but it may also contain one of the pre-defined constants ESTATE_OWNER (evaluates to the UUID of the estate owner) and ESTATE_MANAGER 
-(evaluates to a list of estate manager UUIDS). 
+but it may also contain one of the pre-defined constants ESTATE_OWNER (evaluates to the UUID of the estate owner) and ESTATE_MANAGER
+(evaluates to a list of estate manager UUIDS).
 
 * For commands sent from in-world chat, it is the UUID of the avatar sending the command that is checked against the list.
 * For commands sent from a script it is the UUID of the owner of the prim in which the script resides that is checked against the list.
@@ -134,7 +134,7 @@ Any currently rezzed in-scene-object can be used as the bird prim. However fps i
 complexity of the entity to use. It is easier to throw a single prim (or sculpty) around the scene than it is to
 throw the constituent parts of a 200 linked prim dragon.
 
-Tests show that <= 500 single prims can be flocked effectively - depending on system and network	
+Tests show that <= 500 single prims can be flocked effectively - depending on system and network
 However maybe <= 300 simple linksets can perform as well.
 
 Network Traffic:
@@ -186,9 +186,9 @@ is an example output:
 
 In the above example, there is one avatar sitting on bird-prim18. For more than one avatar the UUID list will be separated by spaces.
 
-Please Note: 
+Please Note:
 
-This module is currently only tested against opensim master. 
+This module is currently only tested against opensim master.
 
 Licence: all files released under a BSD licence
 If you have any question please contact Jak Daniels, jak@ateb.co.uk

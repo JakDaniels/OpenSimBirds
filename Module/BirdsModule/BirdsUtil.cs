@@ -30,23 +30,23 @@ using OpenMetaverse;
 
 namespace Flocking
 {
-	public class BirdsUtil
-	{
-		public static Vector3 Limit (Vector3 initial, float maxLen)
-		{
-			float currLen = initial.Length ();
-			float ratio = 1.0f;
-			
-			if (currLen > maxLen) { 
-				ratio = currLen / maxLen;
-			}
-		
-			return initial /= ratio;
-		
-		}
-		
-		
+    public class BirdsUtil
+    {
+        public static Vector3 Limit (Vector3 initial, float maxLen)
+        {
+            float currLen = initial.Length ();
+            float ratio = 1.0f;
 
-	}
+            if (currLen > maxLen) {
+                ratio = currLen / maxLen;
+            }
+
+            return initial /= ratio;
+
+        }
+
+
+
+    }
 }
 
